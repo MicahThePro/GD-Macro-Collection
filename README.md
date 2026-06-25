@@ -36,9 +36,7 @@ To load a macro with the **Peony Silicate** replay system:
 3. Paste it into the correct directory:
 
 - **Windows:**  
-  `C:\Users
-
-\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays`
+  `C:\Users\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays`
 
 - **Linux (Proton):**  
   `~/.steam/steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays`
