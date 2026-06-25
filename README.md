@@ -33,9 +33,13 @@ To load a macro into Geometry Dash using the **Peony Silicate replay system**, f
 
 1. Pick the macro you want from this repository.  
 2. Copy the `.slc` file.  
-3. Paste it into the following directory on Windows:
+3. Paste it into the following directory:
 
-C:\Users\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays
+- Windows: **C:\Users\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays**
+- Linux (Proton): **~/.steam/steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays**
+- MacOS (Proton): **~/Library/Application Support/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays**
+
+**Note:** On both Linux and macOS, Geometry Dash runs inside a Proton prefix. Proton recreates the Windows filesystem inside compatdata/322170/pfx, so the folder structure is identical across both platforms.
 
 
 4. Open Geometry Dash.  
