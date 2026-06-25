@@ -63,4 +63,4 @@ If the folder isn’t there, double‑check that **Geode** and **Silicate** are 
 
 ## 📬 Contributing
 
-If you’d like to add your own macros, feel free to open an issue or submit a pull request.
+If you’d like to add your own macros, feel free to open an issue, submit a pull request, or use the macro recommend form on the website.
