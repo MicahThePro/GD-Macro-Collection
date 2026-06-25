@@ -47,7 +47,8 @@ To load a macro with the **Peony Silicate** replay system:
 **Note:** On Linux and macOS, Geometry Dash runs inside a Proton prefix, so the folder structure mirrors Windows.
 
 4. Launch Geometry Dash.  
-5. Press **F** or **Left Alt** to open the replay menu — your macro should appear automatically.
+5. Press **F** or **Alt** to open the replay menu — your macro should appear automatically.
+6. Click on the macro of your choice and then click **Load** and then **Play**.
 
 If the folder isn’t there, double‑check that **Geode** and **Peony Silicate** are installed correctly.
 
