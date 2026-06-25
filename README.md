@@ -1,6 +1,6 @@
-# Geometry Dash 240 FPS Macro Collection
+# Geometry Dash 240 TPS Macro Collection
 
-A clean and organized collection of **240 FPS Geometry Dash macros** intended for practice, learning, and experimentation.  
+A clean and organized collection of **240 TPS Geometry Dash macros** intended for practice, learning, and experimentation.  
 All macros are provided as **.slc replay files** and sorted by level type and difficulty for easy navigation.
 
 ---
@@ -47,7 +47,7 @@ If the folder doesn’t exist, make sure **Geode** and **Peony Silicate** are in
 
 ## ⚠️ Notes
 
-- All macros were recorded at **240 FPS** for consistency.  
+- All macros were recorded at **240 TPS** for consistency.  
 - Performance may vary depending on your system and settings.
 
 ---
