@@ -1,13 +1,13 @@
 # Geometry Dash 240 TPS Macro Collection
 
-A clean and organized collection of **240 TPS Geometry Dash macros** intended for practice, learning, and experimentation.  
-All macros are provided as **.slc replay files** and sorted by level type and difficulty for easy navigation.
+A curated set of **240 TPS Geometry Dash macros** built for practice, learning, and experimentation.  
+Each macro is provided as a **.slc replay file** and organized by level type and difficulty so you can find what you need quickly.
 
 ---
 
 ## 📁 Repository Structure
 
-This repository contains two main folders:
+This project is divided into two main sections:
 
 ### **Main Levels**
 Official Geometry Dash levels, sorted by difficulty:
@@ -16,49 +16,55 @@ Official Geometry Dash levels, sorted by difficulty:
 - Hard  
 - Harder  
 - Insane  
-- Demon
+- Demon  
 
 ### **Custom Levels**
-Community and popular custom levels, also sorted by:
+Popular and community-made levels, sorted by:
 - Easy → Insane  
 - Easy Demon → Extreme Demon  
 
-Each macro file is clearly named so you can quickly identify the level and difficulty.
+Every macro is clearly named, and if a level has coins, the macro collects all of them.
 
 ---
 
-## 🎮 How to Use the Macros
+## 🎮 Using the Macros
 
-To load a macro into Geometry Dash using the **Peony Silicate replay system**, follow these steps:
+To load a macro with the **Peony Silicate** replay system:
 
-1. Pick the macro you want from this repository.  
+1. Choose a macro from this repository.  
 2. Copy the `.slc` file.  
-3. Paste it into the following directory:
+3. Paste it into the correct directory:
 
-- Windows: **C:\Users\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays**
-- Linux (Proton): **~/.steam/steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays**
-- MacOS (Proton): **~/Library/Application Support/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays**
+- **Windows:**  
+  `C:\Users
 
-**Note:** On both Linux and macOS, Geometry Dash runs inside a Proton prefix. Proton recreates the Windows filesystem inside compatdata/322170/pfx, so the folder structure is identical across both platforms.
+\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays`
 
+- **Linux (Proton):**  
+  `~/.steam/steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays`
 
-4. Open Geometry Dash.  
-5. Press **F** or **Left Alt** to open the menu — your macro will appear there automatically.
+- **macOS (Proton):**  
+  `~/Library/Application Support/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays`
 
-If the folder doesn’t exist, make sure **Geode** and **Peony Silicate** are installed correctly.
+**Note:** On Linux and macOS, Geometry Dash runs inside a Proton prefix, so the folder structure mirrors Windows.
+
+4. Launch Geometry Dash.  
+5. Press **F** or **Left Alt** to open the replay menu — your macro should appear automatically.
+
+If the folder isn’t there, double‑check that **Geode** and **Peony Silicate** are installed correctly.
 
 ---
 
 ## ⚠️ Notes
 
-- All macros were recorded at **240 TPS** for consistency.  
-- Performance may vary depending on your system and settings.
+- All macros are recorded at **240 TPS** for consistency.  
+- Performance may vary depending on your hardware and settings.
 
 ---
 
 ## 📬 Contributing
 
-If you want to add your own macros, feel free to open an issue or submit a pull request.
+If you’d like to add your own macros, feel free to open an issue or submit a pull request.
 
 ---
 
