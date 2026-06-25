@@ -29,7 +29,7 @@ Every macro is clearly named, and if a level has coins, the macro collects all o
 
 ## 🎮 Using the Macros
 
-To load a macro with the **Peony Silicate** replay system:
+To load a macro with the **Silicate** replay mod:
 
 1. Choose a macro from this repository.  
 2. Copy the `.slc` file.  
@@ -50,7 +50,7 @@ To load a macro with the **Peony Silicate** replay system:
 5. Press **F** or **Alt** to open the replay menu — your macro should appear automatically.
 6. Click on the macro of your choice and then click **Load** and then **Play**.
 
-If the folder isn’t there, double‑check that **Geode** and **Peony Silicate** are installed correctly.
+If the folder isn’t there, double‑check that **Geode** and **Silicate** are installed correctly.
 
 ---
 
@@ -64,12 +64,3 @@ If the folder isn’t there, double‑check that **Geode** and **Peony Silicate*
 ## 📬 Contributing
 
 If you’d like to add your own macros, feel free to open an issue or submit a pull request.
-
----
-
-## 🔗 Quick Navigation
-
-- [Main Levels](ca://s?q=open_main_levels_folder)  
-- [Custom Levels](ca://s?q=open_custom_levels_folder)  
-- [Add a Macro](ca://s?q=add_new_macro)  
-- [Edit README](ca://s?q=edit_readme)
