@@ -3,6 +3,8 @@
 A curated set of **240 FPS & TPS Geometry Dash macros** built for practice, learning, and experimentation.  
 Each macro is provided as a **.slc replay file** and organized by level type and difficulty so you can find what you need quickly.
 
+> This collection is intended for educational and showcase purposes only, not to promote cheating.
+
 ---
 
 ## 📁 Repository Structure
