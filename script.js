@@ -470,7 +470,6 @@ function renderCollection(filter = '') {
     sortBar.innerHTML = `
       <button data-sort="name">Name</button>
       <button data-sort="id">ID</button>
-      <button data-sort="recent">Recently Added</button>
     `;
     section.appendChild(sortBar);
 
@@ -492,9 +491,6 @@ function renderCollection(filter = '') {
 
     if (sortMode === 'name') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
     if (sortMode === 'id') sortedMacros.sort((a, b) => parseInt(parseTitleAndId(a.filename).id) - parseInt(parseTitleAndId(b.filename).id));
-    if (sortMode === 'recent') {
-      sortedMacros.sort((a, b) => b.lastModified - a.lastModified);
-    }
 
     const searchItems = sortedMacros.filter(m => {
       const searchText = `${m.filename} ${m.category} ${m.group}`.toLowerCase();
@@ -577,27 +573,7 @@ async function fetchMacroTree() {
   return macros;
 }
 
-async function fetchCommitTimestamps() {
-  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=timestamps`;
-  const res = await fetch(url, { cache: 'no-store' });
-  return new Map(Object.entries(await res.json()));
-
-  const map = new Map();
-
-  for (const commit of commits) {
-    const timestamp = new Date(commit.commit.committer.date).getTime();
-
-    if (commit.files) {
-      for (const file of commit.files) {
-        if (file.filename.endsWith('.slc')) {
-          map.set(file.filename, timestamp);
-        }
-      }
-    }
-  }
-
-  return map;
-}
+const macroList = await fetchMacroTree();
 
 async function loadMacros() {
   setLoading('Loading macros from GitHub...');
@@ -612,7 +588,7 @@ async function loadMacros() {
     // Attach timestamps so "Recently Added" works
     macros = macroList.map(m => ({
       ...m,
-      lastModified: commitMap.get(m.path) || 0
+      lastModified: 0
     }));
 
     updateMacroCount();
