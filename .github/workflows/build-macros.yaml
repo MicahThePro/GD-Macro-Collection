@@ -18,8 +18,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - name: Build macros.json
+        run: node build-macros.js
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Build macros.json
         run: node build-macros.js
