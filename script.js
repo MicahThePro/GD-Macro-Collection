@@ -6,7 +6,6 @@ const GITHUB_TREE_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}
 const GITHUB_COMMIT_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits`;
 const REPO_ARCHIVE_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${REPO_BRANCH}.zip`;
 const POLL_INTERVAL_MS = 300000; // 5 minutes
-const RECENT_HIGHLIGHT_MS = 10000;
 
 const collectionElement = document.getElementById('collection');
 const breadcrumbElement = document.getElementById('breadcrumb');
@@ -45,7 +44,6 @@ let state = {
   category: null,
 };
 let previousViewSignature = '';
-let highlightPaths = new Set();
 let pollingIntervalId = null;
 
 function createUrl(path) {
@@ -130,26 +128,12 @@ function collectCurrentVisiblePaths() {
     .map((macro) => macro.path));
 }
 
-function markRecentMacros(newPaths) {
-  highlightPaths.clear();
-  newPaths.forEach((path) => highlightPaths.add(path));
-  window.setTimeout(() => {
-    highlightPaths.clear();
-    if (state.view === 'macros') {
-      renderCollection(filterInput.value);
-    }
-  }, RECENT_HIGHLIGHT_MS);
-}
-
 function buildMacroCard(macro) {
   const { title, id } = parseTitleAndId(macro.filename);
   const url = createUrl(macro.path);
 
   const card = document.createElement('article');
   card.className = 'card';
-  if (highlightPaths.has(macro.path)) {
-    card.classList.add('highlight');
-  }
   card.dataset.title = title.toLowerCase();
   card.dataset.group = macro.group.toLowerCase();
   card.dataset.category = macro.category.toLowerCase();
@@ -547,6 +531,21 @@ function getMacroMetadata(path) {
   return { path, group, subgroup, category, filename };
 }
 
+async function loadMacros() {
+  setLoading('Loading macros from GitHub...');
+
+  try {
+    macros = await fetchMacroTree();
+    updateMacroCount();
+    renderBreadcrumb();
+    renderCollection();
+  } catch (error) {
+    collectionElement.innerHTML =
+      `<p class="card-subtitle">Unable to load macros from GitHub. ${error.message}</p>`;
+    console.error(error);
+  }
+}
+
 async function fetchDirectory(path = '') {
   const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
   const res = await fetch(url, { cache: 'no-store' });
@@ -571,96 +570,6 @@ async function fetchMacroTree() {
 
   await walk('');
   return macros;
-}
-
-const macroList = await fetchMacroTree();
-
-async function loadMacros() {
-  setLoading('Loading macros from GitHub...');
-
-  try {
-    // Fetch macro list + commit timestamps at the same time
-    const [macroList, commitMap] = await Promise.all([
-      fetchMacroTree(),
-      fetchCommitTimestamps()
-    ]);
-
-    // Attach timestamps so "Recently Added" works
-    macros = macroList.map(m => ({
-      ...m,
-      lastModified: 0
-    }));
-
-    updateMacroCount();
-    previousViewSignature = getViewSignature();
-    renderBreadcrumb();
-    renderCollection();
-    startPolling();
-
-  } catch (error) {
-    collectionElement.innerHTML =
-      `<p class="card-subtitle">Unable to load macros from GitHub. ${error.message}</p>`;
-    console.error(error);
-  }
-}
-
-async function refreshIfNeeded() {
-  try {
-    const [latestMacroList, commitMap] = await Promise.all([
-      fetchMacroTree(),
-      fetchCommitTimestamps()
-    ]);
-
-    const latestMacros = latestMacroList.map(m => ({
-      ...m,
-      lastModified: commitMap.get(m.path) || 0
-    }));
-
-    const latestPaths = new Set(latestMacros.map(m => m.path));
-    const currentPaths = new Set(macros.map(m => m.path));
-
-    const addedPaths = [...latestPaths].filter(p => !currentPaths.has(p));
-    const removedPaths = [...currentPaths].filter(p => !latestPaths.has(p));
-
-    const hasChanges = addedPaths.length > 0 || removedPaths.length > 0;
-    if (!hasChanges) return;
-
-    macros = latestMacros;
-    updateMacroCount();
-
-    const currentVisiblePaths = collectCurrentVisiblePaths();
-    const addedVisiblePaths = addedPaths.filter(p => currentVisiblePaths.has(p));
-
-    if (addedVisiblePaths.length > 0) {
-      markRecentMacros(addedVisiblePaths);
-      showToast('New macros were added in this folder.');
-    }
-
-    renderBreadcrumb();
-    renderCollection(filterInput.value);
-    previousViewSignature = getViewSignature();
-
-  } catch (error) {
-    console.warn('Auto-refresh failed:', error);
-    if (error.message && error.message.includes('rate limit exceeded')) {
-      stopPolling();
-      showToast('GitHub rate limit hit. Refresh manually later.');
-    }
-  }
-}
-
-function startPolling() {
-  if (pollingIntervalId !== null) {
-    return;
-  }
-  pollingIntervalId = window.setInterval(refreshIfNeeded, POLL_INTERVAL_MS);
-}
-
-function stopPolling() {
-  if (pollingIntervalId !== null) {
-    window.clearInterval(pollingIntervalId);
-    pollingIntervalId = null;
-  }
 }
 
 filterInput.addEventListener('input', (event) => renderCollection(event.target.value));
