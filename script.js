@@ -577,38 +577,82 @@ async function fetchMacroTree() {
   return macros;
 }
 
+async function fetchCommitTimestamps() {
+  const res = await fetch(`${GITHUB_COMMIT_URL}?per_page=30`, { cache: 'no-store' });
+  const commits = await res.json();
+
+  const map = new Map();
+
+  for (const commit of commits) {
+    const timestamp = new Date(commit.commit.committer.date).getTime();
+
+    if (commit.files) {
+      for (const file of commit.files) {
+        if (file.filename.endsWith('.slc')) {
+          map.set(file.filename, timestamp);
+        }
+      }
+    }
+  }
+
+  return map;
+}
+
 async function loadMacros() {
   setLoading('Loading macros from GitHub...');
+
   try {
-    macros = await fetchMacroTree();
+    // Fetch macro list + commit timestamps at the same time
+    const [macroList, commitMap] = await Promise.all([
+      fetchMacroTree(),
+      fetchCommitTimestamps()
+    ]);
+
+    // Attach timestamps so "Recently Added" works
+    macros = macroList.map(m => ({
+      ...m,
+      lastModified: commitMap.get(m.path) || 0
+    }));
+
     updateMacroCount();
     previousViewSignature = getViewSignature();
     renderBreadcrumb();
     renderCollection();
     startPolling();
+
   } catch (error) {
-    collectionElement.innerHTML = `<p class="card-subtitle">Unable to load macros from GitHub. ${error.message}</p>`;
+    collectionElement.innerHTML =
+      `<p class="card-subtitle">Unable to load macros from GitHub. ${error.message}</p>`;
     console.error(error);
   }
 }
 
 async function refreshIfNeeded() {
   try {
-    const latestMacros = await fetchMacroTree();
-    const latestPaths = new Set(latestMacros.map((macro) => macro.path));
-    const currentPaths = new Set(macros.map((macro) => macro.path));
-    const addedPaths = [...latestPaths].filter((path) => !currentPaths.has(path));
-    const removedPaths = [...currentPaths].filter((path) => !latestPaths.has(path));
-    const hasChanges = addedPaths.length > 0 || removedPaths.length > 0;
+    const [latestMacroList, commitMap] = await Promise.all([
+      fetchMacroTree(),
+      fetchCommitTimestamps()
+    ]);
 
-    if (!hasChanges) {
-      return;
-    }
+    const latestMacros = latestMacroList.map(m => ({
+      ...m,
+      lastModified: commitMap.get(m.path) || 0
+    }));
+
+    const latestPaths = new Set(latestMacros.map(m => m.path));
+    const currentPaths = new Set(macros.map(m => m.path));
+
+    const addedPaths = [...latestPaths].filter(p => !currentPaths.has(p));
+    const removedPaths = [...currentPaths].filter(p => !latestPaths.has(p));
+
+    const hasChanges = addedPaths.length > 0 || removedPaths.length > 0;
+    if (!hasChanges) return;
 
     macros = latestMacros;
     updateMacroCount();
+
     const currentVisiblePaths = collectCurrentVisiblePaths();
-    const addedVisiblePaths = addedPaths.filter((path) => currentVisiblePaths.has(path));
+    const addedVisiblePaths = addedPaths.filter(p => currentVisiblePaths.has(p));
 
     if (addedVisiblePaths.length > 0) {
       markRecentMacros(addedVisiblePaths);
@@ -618,6 +662,7 @@ async function refreshIfNeeded() {
     renderBreadcrumb();
     renderCollection(filterInput.value);
     previousViewSignature = getViewSignature();
+
   } catch (error) {
     console.warn('Auto-refresh failed:', error);
     if (error.message && error.message.includes('rate limit exceeded')) {
