@@ -551,25 +551,30 @@ function getMacroMetadata(path) {
   return { path, group, subgroup, category, filename };
 }
 
+async function fetchDirectory(path = '') {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+  return res.json();
+}
+
 async function fetchMacroTree() {
-  const response = await fetch(GITHUB_TREE_URL, { cache: 'no-store' });
-  const data = await response.json();
+  const macros = [];
 
-  const macroList = (data.tree || [])
-    .filter(node => node.type === 'blob' && node.path.toLowerCase().endsWith('.slc'))
-    .map(node => getMacroMetadata(node.path));
+  async function walk(path = '') {
+    const items = await fetchDirectory(path);
 
-  // Fetch commit timestamps for each macro
-  for (const macro of macroList) {
-    const commitRes = await fetch(`${GITHUB_COMMIT_URL}?path=${macro.path}`);
-    const commitData = await commitRes.json();
-
-    macro.lastModified = commitData[0]?.commit?.committer?.date
-      ? new Date(commitData[0].commit.committer.date).getTime()
-      : 0;
+    for (const item of items) {
+      if (item.type === 'dir') {
+        await walk(item.path);
+      } else if (item.type === 'file' && item.name.toLowerCase().endsWith('.slc')) {
+        macros.push(getMacroMetadata(item.path));
+      }
+    }
   }
 
-  return macroList.sort((a, b) => a.path.localeCompare(b.path));
+  await walk('');
+  return macros;
 }
 
 async function loadMacros() {
