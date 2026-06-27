@@ -37,6 +37,7 @@ function groupHasCategories(group) {
 }
 
 let macros = [];
+let sortMode = 'name'; // name | id | filename | recent
 let state = {
   view: 'groups',
   group: null,
@@ -324,6 +325,25 @@ function renderCollection(filter = '') {
       </div>
     `;
 
+    // Sorting bar
+    const sortBar = document.createElement('div');
+    sortBar.className = 'sort-bar';
+    sortBar.innerHTML = `
+      <button data-sort="name">Name</button>
+      <button data-sort="id">ID</button>
+      <button data-sort="filename">Filename</button>
+      <button data-sort="recent">Recently Added</button>
+    `;
+    section.appendChild(sortBar);
+
+    // Add click handlers
+    sortBar.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sortMode = btn.dataset.sort;
+        renderCollection(filterInput.value);
+      });
+    });
+
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
@@ -452,10 +472,34 @@ function renderCollection(filter = '') {
 
   if (state.view === 'macros') {
     const filteredMacros = macros
-      .filter((macro) => macro.group === state.group)
-      .filter((macro) => state.subgroup ? macro.subgroup === state.subgroup : true)
-      .filter((macro) => state.category ? macro.category === state.category : true);
-    const searchItems = filteredMacros.filter((macro) => {
+    .filter((macro) => macro.group === state.group)
+    .filter((macro) => state.subgroup ? macro.subgroup === state.subgroup : true)
+    .filter((macro) => state.category ? macro.category === state.category : true);
+    // Apply sorting
+    let sortedMacros = [...filteredMacros];
+
+    if (sortMode === 'name') {
+      sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
+    }
+
+    if (sortMode === 'id') {
+      sortedMacros.sort((a, b) => {
+        const idA = parseInt(parseTitleAndId(a.filename).id || 0);
+        const idB = parseInt(parseTitleAndId(b.filename).id || 0);
+        return idA - idB;
+      });
+    }
+
+    if (sortMode === 'filename') {
+      sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
+    }
+
+    if (sortMode === 'recent') {
+      sortedMacros.sort((a, b) => {
+        return b.path.localeCompare(a.path); // newest files appear last alphabetically
+      });
+    }
+    const searchItems = sortedMacros.filter((macro) => {
       const searchText = `${macro.filename} ${macro.category} ${macro.group}`.toLowerCase();
       return !normalizedFilter || searchText.includes(normalizedFilter);
     });
