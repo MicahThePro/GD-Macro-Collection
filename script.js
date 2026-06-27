@@ -168,13 +168,16 @@ function buildMacroCard(macro) {
     <span class="tag">${macro.filename}</span>
   `;
 
-  const noteText = title === 'Future Funk' && id === '44062068'
-    ? 'This macro targets a random timing event when collecting the 3rd coin. It was recorded to click more than 55 times for that specific run, so the macro will always use that behavior even if the game state varies.'
-    : '';
-  const noteText = title === 'GLUNGUS ADVENTURES' && id === '138615726'
-    ? 'This level has a random set of minigames in the level that play randomly. The macro will only play a specific order of minigames that ocurred when it was recorded. If the minigames are in a different order, the macro will fail to complete the level.'
-    : '';
-const noteRow = document.createElement('p');
+  let noteText = '';
+
+  if (title === 'Future Funk' && id === '44062068') {
+    noteText = 'This macro targets a random timing event when collecting the 3rd coin. It was recorded to click more than 55 times for that specific run, so the macro will always use that behavior even if the game state varies.';
+  }
+
+  if (title === 'GLUNGUS ADVENTURES' && id === '138615726') {
+    noteText = 'This level has a random set of minigames in the level that play randomly. The macro will only play a specific order of minigames that occurred when it was recorded. If the minigames are in a different order, the macro will fail to complete the level.';
+  }
+  const noteRow = document.createElement('p');
   if (noteText) {
     noteRow.className = 'macro-note';
     noteRow.textContent = noteText;
