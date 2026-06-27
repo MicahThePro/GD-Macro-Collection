@@ -22,21 +22,19 @@ Official Geometry Dash levels, sorted by difficulty:
 
 ### **Rated Custom Levels**
 Original custom levels, sorted by:
-- NA  
 - Easy  
 - Normal  
 - Hard  
 - Harder  
-- Insane  
+- Insane
+- Easy Demon
+- Medium Demon
+- Hard Demon
+- Insane Demon
+- Extreme Demon
 
 ### **Unrated Custom Levels**
-New or experimental custom levels, sorted by:
-- NA  
-- Easy  
-- Normal  
-- Hard  
-- Harder  
-- Insane  
+Levels that aren't rated (aka. impossible levels)
 
 Every macro is clearly named, and if a level has coins, the macro collects all of them.
 
