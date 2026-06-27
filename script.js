@@ -552,9 +552,9 @@ function getMacroMetadata(path) {
 }
 
 async function fetchDirectory(path = '') {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
   const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+  if (!res.ok) throw new Error(`Proxy error: ${res.status}`);
   return res.json();
 }
 
@@ -578,7 +578,8 @@ async function fetchMacroTree() {
 }
 
 async function fetchCommitTimestamps() {
-  const res = await fetch(`${GITHUB_COMMIT_URL}?per_page=30`, { cache: 'no-store' });
+  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=repos/${REPO_OWNER}/${REPO_NAME}/commits?per_page=30`;
+  const res = await fetch(url, { cache: 'no-store' });
   const commits = await res.json();
 
   const map = new Map();
