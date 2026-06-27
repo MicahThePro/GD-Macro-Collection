@@ -325,25 +325,6 @@ function renderCollection(filter = '') {
       </div>
     `;
 
-    // Sorting bar
-    const sortBar = document.createElement('div');
-    sortBar.className = 'sort-bar';
-    sortBar.innerHTML = `
-      <button data-sort="name">Name</button>
-      <button data-sort="id">ID</button>
-      <button data-sort="filename">Filename</button>
-      <button data-sort="recent">Recently Added</button>
-    `;
-    section.appendChild(sortBar);
-
-    // Add click handlers
-    sortBar.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sortMode = btn.dataset.sort;
-        renderCollection(filterInput.value);
-      });
-    });
-
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
@@ -471,38 +452,6 @@ function renderCollection(filter = '') {
   }
 
   if (state.view === 'macros') {
-    const filteredMacros = macros
-    .filter((macro) => macro.group === state.group)
-    .filter((macro) => state.subgroup ? macro.subgroup === state.subgroup : true)
-    .filter((macro) => state.category ? macro.category === state.category : true);
-    // Apply sorting
-    let sortedMacros = [...filteredMacros];
-
-    if (sortMode === 'name') {
-      sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
-    }
-
-    if (sortMode === 'id') {
-      sortedMacros.sort((a, b) => {
-        const idA = parseInt(parseTitleAndId(a.filename).id || 0);
-        const idB = parseInt(parseTitleAndId(b.filename).id || 0);
-        return idA - idB;
-      });
-    }
-
-    if (sortMode === 'filename') {
-      sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
-    }
-
-    if (sortMode === 'recent') {
-      sortedMacros.sort((a, b) => {
-        return b.path.localeCompare(a.path); // newest files appear last alphabetically
-      });
-    }
-    const searchItems = sortedMacros.filter((macro) => {
-      const searchText = `${macro.filename} ${macro.category} ${macro.group}`.toLowerCase();
-      return !normalizedFilter || searchText.includes(normalizedFilter);
-    });
 
     const section = document.createElement('section');
     section.className = 'folder';
@@ -510,15 +459,52 @@ function renderCollection(filter = '') {
       <div class="folder-header">
         <div>
           <h2 class="folder-title">${state.category}</h2>
-          <p class="folder-meta">${searchItems.length} macros in ${GROUP_LABELS[state.group] || state.group}</p>
+          <p class="folder-meta">Macros in ${GROUP_LABELS[state.group] || state.group}</p>
         </div>
       </div>
     `;
 
+    // CREATE SORT BAR FIRST
+    const sortBar = document.createElement('div');
+    sortBar.className = 'sort-bar';
+    sortBar.innerHTML = `
+      <button data-sort="name">Name</button>
+      <button data-sort="id">ID</button>
+      <button data-sort="filename">Filename</button>
+      <button data-sort="recent">Recently Added</button>
+    `;
+    section.appendChild(sortBar);
+
+    // NOW YOU CAN SAFELY ADD EVENT LISTENERS
+    sortBar.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sortMode = btn.dataset.sort;
+        renderCollection(filterInput.value);
+      });
+    });
+
+    // NOW FILTER + SORT + RENDER MACROS
+    const filteredMacros = macros
+      .filter(m => m.group === state.group)
+      .filter(m => state.subgroup ? m.subgroup === state.subgroup : true)
+      .filter(m => state.category ? m.category === state.category : true);
+
+    let sortedMacros = [...filteredMacros];
+
+    if (sortMode === 'name') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
+    if (sortMode === 'id') sortedMacros.sort((a, b) => parseInt(parseTitleAndId(a.filename).id) - parseInt(parseTitleAndId(b.filename).id));
+    if (sortMode === 'filename') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
+    if (sortMode === 'recent') sortedMacros.sort((a, b) => b.path.localeCompare(a.path));
+
+    const searchItems = sortedMacros.filter(m => {
+      const searchText = `${m.filename} ${m.category} ${m.group}`.toLowerCase();
+      return !normalizedFilter || searchText.includes(normalizedFilter);
+    });
+
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
-    searchItems.forEach((macro) => grid.appendChild(buildMacroCard(macro)));
+    searchItems.forEach(macro => grid.appendChild(buildMacroCard(macro)));
 
     if (searchItems.length === 0) {
       const emptyState = document.createElement('p');
@@ -531,7 +517,7 @@ function renderCollection(filter = '') {
 
     collectionElement.appendChild(section);
     return;
-  }
+}
 }
 
 function downloadAll() {
