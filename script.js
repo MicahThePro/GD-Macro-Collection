@@ -578,9 +578,9 @@ async function fetchMacroTree() {
 }
 
 async function fetchCommitTimestamps() {
-  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=repos/${REPO_OWNER}/${REPO_NAME}/commits?per_page=30`;
+  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=timestamps`;
   const res = await fetch(url, { cache: 'no-store' });
-  const commits = await res.json();
+  return new Map(Object.entries(await res.json()));
 
   const map = new Map();
 
