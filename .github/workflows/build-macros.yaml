@@ -1,0 +1,33 @@
+name: Build Macros JSON
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build macros.json
+        run: node build-macros.js
+
+      - name: Commit macros.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add macros.json
+          git commit -m "Update macros.json" || echo "No changes to commit"
+          git push
