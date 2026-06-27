@@ -10,7 +10,6 @@ A curated set of **240 FPS & TPS Geometry Dash macros** for practice, learning, 
 
 The website now includes:
 
-- A **mobile-friendly** browsing experience
 - A **Download All as ZIP** option for the full collection
 - A **total macro counter** on the home page
 - A **search bar** for quickly finding macros by name, category, or level
