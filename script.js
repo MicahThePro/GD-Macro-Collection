@@ -470,7 +470,6 @@ function renderCollection(filter = '') {
     sortBar.innerHTML = `
       <button data-sort="name">Name</button>
       <button data-sort="id">ID</button>
-      <button data-sort="filename">Filename</button>
       <button data-sort="recent">Recently Added</button>
     `;
     section.appendChild(sortBar);
@@ -493,8 +492,9 @@ function renderCollection(filter = '') {
 
     if (sortMode === 'name') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
     if (sortMode === 'id') sortedMacros.sort((a, b) => parseInt(parseTitleAndId(a.filename).id) - parseInt(parseTitleAndId(b.filename).id));
-    if (sortMode === 'filename') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
-    if (sortMode === 'recent') sortedMacros.sort((a, b) => b.path.localeCompare(a.path));
+    if (sortMode === 'recent') {
+      sortedMacros.sort((a, b) => b.lastModified - a.lastModified);
+    }
 
     const searchItems = sortedMacros.filter(m => {
       const searchText = `${m.filename} ${m.category} ${m.group}`.toLowerCase();
@@ -554,19 +554,22 @@ function getMacroMetadata(path) {
 async function fetchMacroTree() {
   const response = await fetch(GITHUB_TREE_URL, { cache: 'no-store' });
   const data = await response.json();
-  if (!response.ok) {
-    const message = data && data.message ? `: ${data.message}` : '';
-    throw new Error(`GitHub API returned ${response.status}${message}`);
+
+  const macroList = (data.tree || [])
+    .filter(node => node.type === 'blob' && node.path.toLowerCase().endsWith('.slc'))
+    .map(node => getMacroMetadata(node.path));
+
+  // Fetch commit timestamps for each macro
+  for (const macro of macroList) {
+    const commitRes = await fetch(`${GITHUB_COMMIT_URL}?path=${macro.path}`);
+    const commitData = await commitRes.json();
+
+    macro.lastModified = commitData[0]?.commit?.committer?.date
+      ? new Date(commitData[0].commit.committer.date).getTime()
+      : 0;
   }
-  return (data.tree || [])
-    .filter((node) => node.type === 'blob' && node.path.toLowerCase().endsWith('.slc'))
-    .map((node) => getMacroMetadata(node.path))
-    .filter((item) => item.group === 'main-levels' || item.group === 'rated-custom-levels' || item.group === 'unrated-custom-levels')
-    .sort((a, b) => {
-      if (a.group !== b.group) return a.group.localeCompare(b.group);
-      if (a.category !== b.category) return a.category.localeCompare(b.category);
-      return a.filename.localeCompare(b.filename);
-    });
+
+  return macroList.sort((a, b) => a.path.localeCompare(b.path));
 }
 
 async function loadMacros() {
