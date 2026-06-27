@@ -242,65 +242,69 @@ function buildMacroCard(macro) {
 
 function renderBreadcrumb() {
   breadcrumbElement.innerHTML = '';
-  const rootButton = document.createElement('button');
-  rootButton.textContent = 'Home';
-  rootButton.addEventListener('click', () => {
+
+  // HOME
+  const homeBtn = document.createElement('button');
+  homeBtn.textContent = 'Home';
+  homeBtn.addEventListener('click', () => {
     state = { view: 'groups', group: null, subgroup: null, category: null };
     filterInput.value = '';
     renderBreadcrumb();
     renderCollection();
   });
+  breadcrumbElement.appendChild(homeBtn);
 
-  breadcrumbElement.appendChild(rootButton);
+  // GROUP
+  if (state.group) {
+    breadcrumbElement.appendChild(makeSeparator());
 
-  if (state.view !== 'groups') {
-    const separator = document.createElement('span');
-    separator.className = 'separator';
-    separator.textContent = '›';
-    breadcrumbElement.appendChild(separator);
+    const groupBtn = document.createElement('button');
+    groupBtn.textContent = GROUP_LABELS[state.group] || state.group;
+    groupBtn.addEventListener('click', () => {
+      state = groupHasSubgroups(state.group)
+        ? { view: 'subgroups', group: state.group, subgroup: null, category: null }
+        : { view: 'categories', group: state.group, subgroup: null, category: null };
 
-    const groupButton = document.createElement('button');
-    groupButton.textContent = GROUP_LABELS[state.group] || state.group;
-    groupButton.addEventListener('click', () => {
-      if (groupHasSubgroups(state.group)) {
-        state = { view: 'subgroups', group: state.group, subgroup: null, category: null };
-      } else {
-        state = { view: 'categories', group: state.group, subgroup: null, category: null };
-      }
       renderBreadcrumb();
       renderCollection();
     });
-    breadcrumbElement.appendChild(groupButton);
+    breadcrumbElement.appendChild(groupBtn);
   }
 
-  if (state.view === 'subgroups' || state.view === 'categories' || state.view === 'macros') {
-    if (state.subgroup) {
-      const separator = document.createElement('span');
-      separator.className = 'separator';
-      separator.textContent = '›';
-      breadcrumbElement.appendChild(separator);
+  // SUBGROUP
+  if (state.subgroup) {
+    breadcrumbElement.appendChild(makeSeparator());
 
-      const subgroupButton = document.createElement('button');
-      subgroupButton.textContent = state.subgroup;
-      subgroupButton.addEventListener('click', () => {
-        state = { view: 'subgroups', group: state.group, subgroup: null, category: null };
-        renderBreadcrumb();
-        renderCollection();
-      });
-      breadcrumbElement.appendChild(subgroupButton);
-    }
+    const subgroupBtn = document.createElement('button');
+    subgroupBtn.textContent = state.subgroup;
+    subgroupBtn.addEventListener('click', () => {
+      state = { view: 'subgroups', group: state.group, subgroup: null, category: null };
+      renderBreadcrumb();
+      renderCollection();
+    });
+    breadcrumbElement.appendChild(subgroupBtn);
   }
 
-  if (state.view === 'categories' && state.category) {
-    const separator = document.createElement('span');
-    separator.className = 'separator';
-    separator.textContent = '›';
-    breadcrumbElement.appendChild(separator);
+  // CATEGORY
+  if (state.category) {
+    breadcrumbElement.appendChild(makeSeparator());
 
-    const categoryLabel = document.createElement('span');
-    categoryLabel.textContent = state.category;
-    breadcrumbElement.appendChild(categoryLabel);
+    const categoryBtn = document.createElement('button');
+    categoryBtn.textContent = state.category;
+    categoryBtn.addEventListener('click', () => {
+      state = { view: 'categories', group: state.group, subgroup: state.subgroup, category: null };
+      renderBreadcrumb();
+      renderCollection();
+    });
+    breadcrumbElement.appendChild(categoryBtn);
   }
+}
+
+function makeSeparator() {
+  const sep = document.createElement('span');
+  sep.className = 'separator';
+  sep.textContent = '›';
+  return sep;
 }
 
 function renderCollection(filter = '') {
