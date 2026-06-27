@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GD Macro Collection</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Macro Browser</p>
+        <h1>One place for every Geometry Dash macro</h1>
+        <p class="subtitle">Browse the full collection by Main or Custom levels, then download or copy any macro with a single tap.</p>
+        <p id="macroCount" class="macro-count">Loading macro count...</p>
+        <p class="disclaimer">This collection is provided for showcase and educational purposes only, not to encourage cheating.</p>
+        <div class="actions">
+          <button id="downloadAll" class="button primary">Download All as ZIP</button>
+          <button id="showSettingsInfo" class="button secondary">How to set 240 FPS & TPS</button>
+          <button id="showRunInfo" class="button secondary">How to run these macros</button>
+        </div>
+        <p class="settings-note">These macros were recorded at 240 FPS and 240 TPS, so your game settings must be set to those values to use them correctly. Click the button above to see how to set them up.</p>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel-card">
+          <div class="panel-section">
+            <p class="hero-card-label">How it works</p>
+            <ul>
+              <li>Start with Main or Custom Levels</li>
+              <li>Choose a difficulty folder</li>
+              <li>Download or copy the macro link</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="breadcrumb" id="breadcrumb"></div>
+    </header>
+
+    <main>
+      <div class="search-bar">
+        <input id="filterInput" type="search" placeholder="Search levels, difficulty, or macro name" />
+      </div>
+
+      <section id="collection"></section>
+    </main>
+  </div>
+
+  <div id="settingsInfoModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsInfoTitle">
+      <button class="modal-close" id="closeSettingsInfo" aria-label="Close information">×</button>
+      <h2 id="settingsInfoTitle">240 FPS & 240 TPS Setup</h2>
+      <p class="modal-copy">All macros in this collection were recorded at 240 FPS and 240 TPS. To use them correctly, your game settings should be set to those values as well.</p>
+      <div class="modal-steps">
+        <div class="step-card">
+          <h3>Step 1</h3>
+          <p>Open the Settings button, then find the Graphics setting. Go to Advanced, check Unlock FPS if it is not already enabled, and set FPS to 240. Click Apply when done.</p>
+          <div class="gif-placeholder" id="fpsGifPlaceholder"></div>
+        </div>
+        <div class="step-card">
+          <h3>Step 2</h3>
+          <p>Open the Silicate mod with the F or Alt key, and set TPS to 240.</p>
+          <div class="gif-placeholder" id="tpsGifPlaceholder"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="runInfoModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="runInfoTitle">
+      <button class="modal-close" id="closeRunInfo" aria-label="Close instructions">×</button>
+      <h2 id="runInfoTitle">How to run these macros</h2>
+      <div class="modal-copy">
+        <p>To load a macro with the <strong>Silicate</strong> replay mod:</p>
+        <ol>
+          <li>Choose a macro from this website.</li>
+          <li>Copy the `.slc` file.</li>
+          <li>Paste it into the correct replay directory for your platform:</li>
+        </ol>
+        <div class="run-info-paths">
+          <p><strong>Windows:</strong><br />
+            <code>C:\Users\[user]\AppData\Local\GeometryDash\geode-persistent\peony.silicate\replays</code>
+          </p>
+          <p><strong>Linux (Proton):</strong><br />
+            <code>~/.steam/steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays</code>
+          </p>
+          <p><strong>macOS (Proton):</strong><br />
+            <code>~/Library/Application Support/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/AppData/Local/GeometryDash/geode-persistent/peony.silicate/replays</code>
+          </p>
+        </div>
+        <ol start="4">
+          <li>Launch Geometry Dash.</li>
+          <li>Press <strong>F</strong> or <strong>Alt</strong> to open the replay menu.</li>
+          <li>Select the macro, then click <strong>Load</strong> and then <strong>Play</strong>.</li>
+        </ol>
+        <p>If the replay folder doesn’t exist, confirm that <strong>Geode</strong> and <strong>Silicate</strong> are installed correctly.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
