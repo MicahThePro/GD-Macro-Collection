@@ -36,7 +36,9 @@ body {
 
 .page-shell {
   max-width: 1220px;
+  width: min(100%, 1220px);
   margin: 0 auto;
+  padding: 0 10px;
 }
 
 .hero {
@@ -636,17 +638,33 @@ section.folder {
 
 @media (max-width: 980px) {
   body {
-    padding: 18px;
+    padding: 18px 16px 34px;
   }
 
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "hero-copy"
+      "hero-panel"
+      "breadcrumb";
     gap: 20px;
-    padding: 28px;
+    padding: 24px;
+  }
+
+  .hero-panel {
+    width: 100% !important;
+  }
+
+  .hero-panel-card,
+  .card,
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
   }
 
   .hero-highlights {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
   }
 
   .intro-panel {
@@ -656,15 +674,25 @@ section.folder {
 
   .breadcrumb {
     padding: 12px 14px;
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
   }
 
   .card-actions {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
   }
 
   .card-actions a,
-  .card-actions button {
+  .card-actions button,
+  .button,
+  .search-bar input {
     min-width: 0;
     width: 100%;
   }
@@ -672,7 +700,7 @@ section.folder {
 
 @media (max-width: 760px) {
   body {
-    padding: 16px 14px 40px;
+    padding: 16px 14px 34px;
   }
 
   .hero,
@@ -683,27 +711,47 @@ section.folder {
 
   .hero {
     padding: 20px;
+    gap: 18px;
+  }
+
+  .hero-copy {
+    gap: 14px;
   }
 
   .hero-panel-card {
     padding: 20px;
   }
 
+  .hero-highlights {
+    gap: 12px;
+  }
+
+  .hero-card-label,
+  .eyebrow {
+    letter-spacing: 0.12em;
+  }
+
+  .stat-card {
+    padding: 14px 16px;
+  }
+
   .card {
     padding: 20px 18px;
-  }
-
-  .intro-panel {
-    gap: 8px;
-  }
-
-  .intro-copy {
-    max-width: none;
   }
 
   .search-bar input {
     min-height: 52px;
     font-size: 16px;
+    padding: 14px 18px;
+    border-radius: 18px;
+  }
+
+  .intro-panel {
+    gap: 10px;
+  }
+
+  .intro-copy {
+    max-width: none;
   }
 
   .card-row {
@@ -734,6 +782,117 @@ section.folder {
 
   .gif-placeholder {
     min-height: 180px;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding: 12px 12px 28px;
+  }
+
+  .hero {
+    padding: 18px;
+  }
+
+  .hero-copy {
+    gap: 12px;
+  }
+
+  .brand-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .brand-badge,
+  .brand-pill {
+    padding: 8px 12px;
+    font-size: 0.72rem;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 9vw, 2.35rem);
+    line-height: 1.15;
+  }
+
+  .subtitle,
+  .intro-copy,
+  .modal-copy,
+  .panel-copy,
+  .macro-count {
+    font-size: 0.95rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .button {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 16px;
+  }
+
+  .hero-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 14px 14px;
+  }
+
+  .folder-header,
+  .card-row,
+  .sort-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sort-bar {
+    gap: 10px;
+  }
+
+  .card {
+    padding: 16px 14px;
+  }
+
+  .card-actions {
+    gap: 10px;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    width: 100%;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+
+  .modal-card {
+    max-height: 94vh;
+    width: 100%;
+  }
+
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .gif-placeholder {
+    min-height: 170px;
+  }
+
+  .site-footer {
+    padding: 12px 2px 0;
+    font-size: 0.9rem;
+  }
+
+  .toast {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 }
 
