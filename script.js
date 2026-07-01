@@ -586,22 +586,31 @@ function loadGifIntoPlaceholder(placeholder, src, alt) {
   }
 
   placeholder.innerHTML = '';
-  const img = document.createElement('img');
-  img.src = src;
-  img.alt = alt;
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  placeholder.appendChild(img);
+  const video = document.createElement('video');
+  video.src = src;
+  video.alt = alt;
+  video.autoplay = true;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.controls = false;
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  video.addEventListener('canplay', () => {
+    video.play().catch(() => {});
+  });
+  placeholder.appendChild(video);
 }
 
 function loadGifPlaceholders() {
   try {
     if (fpsGifPlaceholder) {
-      loadGifIntoPlaceholder(fpsGifPlaceholder, 'assets/howtosetfpsto240.gif', 'How to set FPS to 240');
+      loadGifIntoPlaceholder(fpsGifPlaceholder, 'assets/howtosetfpsto240.mp4', 'How to set FPS to 240');
     }
 
     if (tpsGifPlaceholder) {
-      loadGifIntoPlaceholder(tpsGifPlaceholder, 'assets/howtosettpsto240.gif', 'How to set TPS to 240');
+      loadGifIntoPlaceholder(tpsGifPlaceholder, 'assets/howtosettpsto240.mp4', 'How to set TPS to 240');
     }
   } catch (error) {
     console.warn('Unable to load the GIF previews:', error);
