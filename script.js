@@ -121,7 +121,25 @@ async function copyTextToClipboard(text) {
 function formatCommitDate(isoDate) {
   const date = new Date(isoDate);
   if (Number.isNaN(date.getTime())) return 'Unknown';
-  return date.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+
+  // Convert to UTC-05:00 and format as AM/PM
+  const offsetMinutes = 5 * 60;
+  const utcMinutes = date.getUTCMinutes();
+  const utcHours = date.getUTCHours();
+  const targetMinutes = utcMinutes - offsetMinutes;
+  const adjustedDate = new Date(date.getTime() + (targetMinutes - utcMinutes) * 60000);
+
+  // Create UTC-05:00 equivalent time by shifting from UTC
+  const tzDate = new Date(date.getTime() - offsetMinutes * 60000);
+  const year = tzDate.getUTCFullYear();
+  const month = String(tzDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(tzDate.getUTCDate()).padStart(2, '0');
+  let hours = tzDate.getUTCHours();
+  const minutes = String(tzDate.getUTCMinutes()).padStart(2, '0');
+  const period = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  return `${year}-${month}-${day} ${hours}:${minutes} ${period} UTC-05:00`;
 }
 
 async function fetchMacroLastUpdated(macro) {
