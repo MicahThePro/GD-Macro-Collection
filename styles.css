@@ -30,14 +30,15 @@ body {
 body {
   min-height: 100vh;
   padding: 28px 24px 48px;
-}  overflow-x: hidden;
+  overflow-x: hidden;
+}
 
 
 .page-shell {
   max-width: 1220px;
-  mwidth: min(100%, 1220px);
+  width: min(100%, 1220px);
   margin: 0 auto;
-  padding: 0 10px
+  padding: 0 10px;
 }
 
 .hero {
@@ -151,7 +152,7 @@ h1 {
   cursor: pointer;
   font-weight: 700;
   font-size: 0.95rem;
-  tdisplay: inline-flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   justify-content: center;
@@ -387,11 +388,11 @@ section.folder {
   margin-bottom: 14px;
 }
 
-.fshow-all-button {
+.show-all-button {
   white-space: nowrap;
 }
 
-.older-title {
+.folder-title {
   margin: 0;
   font-size: 1.12rem;
 }
@@ -663,7 +664,7 @@ section.folder {
 
 @media (max-width: 980px) {
   body {
-    padding: 18px; 16px 34px;
+    padding: 18px 16px 34px;
   }
 
   .hero {
@@ -725,7 +726,7 @@ section.folder {
 
 @media (max-width: 760px) {
   body {
-    padding: 16px; 14px 34px;
+    padding: 16px 14px 34px;
   }
 
   .hero,
