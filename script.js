@@ -118,6 +118,34 @@ async function copyTextToClipboard(text) {
   return success;
 }
 
+function formatCommitDate(isoDate) {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return 'Unknown';
+  return date.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+}
+
+async function fetchMacroLastUpdated(macro) {
+  const encodedPath = encodeURIComponent(macro.path);
+  const url = `https://gd-macro-collection.micah-nordlund.workers.dev/?endpoint=repos/${REPO_OWNER}/${REPO_NAME}/commits?path=${encodedPath}&per_page=1`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`Commit metadata error: ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('No commit data');
+  }
+
+  const commit = data[0]?.commit;
+  const dateStr = commit?.author?.date || commit?.committer?.date;
+  if (!dateStr) {
+    throw new Error('No date in commit data');
+  }
+
+  return formatCommitDate(dateStr);
+}
+
 function getViewSignature() {
   return `${state.view}|${state.group || ''}|${state.subgroup || ''}|${state.category || ''}|${filterInput.value.trim().toLowerCase()}`;
 }
@@ -211,6 +239,23 @@ function buildMacroCard(macro) {
   }
 
   card.appendChild(nameRow);
+
+  const timestampRow = document.createElement('p');
+  timestampRow.className = 'card-subtitle macro-timestamp';
+  timestampRow.textContent = macro.lastUpdated ? `Updated ${macro.lastUpdated}` : 'Updated loading…';
+  card.appendChild(timestampRow);
+
+  if (!macro.lastUpdated) {
+    fetchMacroLastUpdated(macro)
+      .then((value) => {
+        macro.lastUpdated = value;
+        timestampRow.textContent = `Updated ${value}`;
+      })
+      .catch(() => {
+        timestampRow.textContent = 'Updated unknown';
+      });
+  }
+
   if (noteText) {
     card.appendChild(noteRow);
   }
