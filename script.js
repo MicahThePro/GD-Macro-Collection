@@ -35,14 +35,84 @@ function groupHasCategories(group) {
   return group === 'main-levels' || groupHasSubgroups(group);
 }
 
+function shouldShowAllButton() {
+  return state.view !== 'macros';
+}
+
+function getShowAllButtonLabel() {
+  if (state.view === 'groups') {
+    return 'Show all macros';
+  }
+
+  if (state.view === 'subgroups') {
+    return `Show all in ${GROUP_LABELS[state.group] || state.group}`;
+  }
+
+  if (state.view === 'categories') {
+    return state.subgroup
+      ? `Show all in ${state.subgroup}`
+      : `Show all in ${GROUP_LABELS[state.group] || state.group}`;
+  }
+
+  return 'Show all';
+}
+
+function createShowAllButton() {
+  if (!shouldShowAllButton()) return null;
+
+  const button = document.createElement('button');
+  button.className = 'button secondary show-all-button';
+  button.textContent = getShowAllButtonLabel();
+  button.addEventListener('click', () => {
+    state = {
+      view: 'macros',
+      group: state.group || null,
+      subgroup: state.subgroup || null,
+      category: null,
+    };
+    renderBreadcrumb();
+    renderCollection(filterInput.value);
+  });
+
+  return button;
+}
+
 let macros = [];
-let sortMode = 'name'; // name | id | filename | recent
+let sortMode = 'name'; // name | id | main
 let state = {
   view: 'groups',
   group: null,
   subgroup: null,
   category: null,
 };
+
+function getSortOptions() {
+  if (state.view !== 'macros') return [{ value: 'name', label: 'Name' }];
+
+  if (state.group === 'main-levels') {
+    return [{ value: 'name', label: 'Name' }];
+  }
+
+  if (!state.group) {
+    return [
+      { value: 'name', label: 'Name' },
+      { value: 'id', label: 'ID' },
+      { value: 'main', label: 'Main Levels' },
+    ];
+  }
+
+  return [
+    { value: 'name', label: 'Name' },
+    { value: 'id', label: 'ID' },
+  ];
+}
+
+function normalizeSortMode() {
+  const validValues = getSortOptions().map((option) => option.value);
+  if (!validValues.includes(sortMode)) {
+    sortMode = 'name';
+  }
+}
 let previousViewSignature = '';
 let pollingIntervalId = null;
 
@@ -121,7 +191,25 @@ async function copyTextToClipboard(text) {
 function formatCommitDate(isoDate) {
   const date = new Date(isoDate);
   if (Number.isNaN(date.getTime())) return 'Unknown';
-  return date.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+
+  // Convert to UTC-05:00 and format as AM/PM
+  const offsetMinutes = 5 * 60;
+  const utcMinutes = date.getUTCMinutes();
+  const utcHours = date.getUTCHours();
+  const targetMinutes = utcMinutes - offsetMinutes;
+  const adjustedDate = new Date(date.getTime() + (targetMinutes - utcMinutes) * 60000);
+
+  // Create UTC-05:00 equivalent time by shifting from UTC
+  const tzDate = new Date(date.getTime() - offsetMinutes * 60000);
+  const year = tzDate.getUTCFullYear();
+  const month = String(tzDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(tzDate.getUTCDate()).padStart(2, '0');
+  let hours = tzDate.getUTCHours();
+  const minutes = String(tzDate.getUTCMinutes()).padStart(2, '0');
+  const period = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  return `${year}-${month}-${day} ${hours}:${minutes} ${period} UTC-05:00`;
 }
 
 async function fetchMacroLastUpdated(macro) {
@@ -359,6 +447,11 @@ function renderCollection(filter = '') {
       </div>
     `;
 
+    const showAllButton = createShowAllButton();
+    if (showAllButton) {
+      section.querySelector('.folder-header').appendChild(showAllButton);
+    }
+
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
@@ -407,6 +500,11 @@ function renderCollection(filter = '') {
       </div>
     `;
 
+    const showAllButton = createShowAllButton();
+    if (showAllButton) {
+      section.querySelector('.folder-header').appendChild(showAllButton);
+    }
+
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
@@ -453,6 +551,11 @@ function renderCollection(filter = '') {
       </div>
     `;
 
+    const showAllButton = createShowAllButton();
+    if (showAllButton) {
+      section.querySelector('.folder-header').appendChild(showAllButton);
+    }
+
     const grid = document.createElement('div');
     grid.className = 'card-grid';
 
@@ -486,25 +589,37 @@ function renderCollection(filter = '') {
   }
 
   if (state.view === 'macros') {
-
     const section = document.createElement('section');
     section.className = 'folder';
+
+    const sectionTitle = state.category
+      || state.subgroup
+      || (state.group ? GROUP_LABELS[state.group] || state.group : 'All Macros');
+
+    const sectionMeta = state.group
+      ? (state.category
+          ? `Macros in ${state.category}`
+          : state.subgroup
+            ? `Macros in ${state.subgroup}`
+            : `Browse all macros in ${GROUP_LABELS[state.group] || state.group}`)
+      : 'Browse the full collection';
+
     section.innerHTML = `
       <div class="folder-header">
         <div>
-          <h2 class="folder-title">${state.category}</h2>
-          <p class="folder-meta">Macros in ${GROUP_LABELS[state.group] || state.group}</p>
+          <h2 class="folder-title">${sectionTitle}</h2>
+          <p class="folder-meta">${sectionMeta}</p>
         </div>
       </div>
     `;
 
     // CREATE SORT BAR FIRST
+    normalizeSortMode();
     const sortBar = document.createElement('div');
     sortBar.className = 'sort-bar';
-    sortBar.innerHTML = `
-      <button data-sort="name">Name</button>
-      <button data-sort="id">ID</button>
-    `;
+    sortBar.innerHTML = getSortOptions().map((option) => `
+      <button data-sort="${option.value}">${option.label}</button>
+    `).join('');
     section.appendChild(sortBar);
 
     // NOW YOU CAN SAFELY ADD EVENT LISTENERS
@@ -516,15 +631,24 @@ function renderCollection(filter = '') {
     });
 
     // NOW FILTER + SORT + RENDER MACROS
-    const filteredMacros = macros
-      .filter(m => m.group === state.group)
+    let filteredMacros = macros
+      .filter(m => (state.group ? m.group === state.group : true))
       .filter(m => state.subgroup ? m.subgroup === state.subgroup : true)
       .filter(m => state.category ? m.category === state.category : true);
+
+    if (sortMode === 'main' && !state.group) {
+      filteredMacros = filteredMacros.filter((m) => m.group === 'main-levels');
+    }
+
+    if (sortMode === 'id') {
+      filteredMacros = filteredMacros.filter((m) => m.group !== 'main-levels');
+    }
 
     let sortedMacros = [...filteredMacros];
 
     if (sortMode === 'name') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
     if (sortMode === 'id') sortedMacros.sort((a, b) => parseInt(parseTitleAndId(a.filename).id) - parseInt(parseTitleAndId(b.filename).id));
+    if (sortMode === 'main') sortedMacros.sort((a, b) => a.filename.localeCompare(b.filename));
 
     const searchItems = sortedMacros.filter(m => {
       const searchText = `${m.filename} ${m.category} ${m.group}`.toLowerCase();
