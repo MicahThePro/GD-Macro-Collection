@@ -31,6 +31,7 @@ body {
 body {
   min-height: 100vh;
   padding: 28px 24px 48px;
+  overflow-x: hidden;
 }
 
 .page-shell {
@@ -671,7 +672,7 @@ section.folder {
 
 @media (max-width: 760px) {
   body {
-    padding: 16px;
+    padding: 16px 14px 40px;
   }
 
   .hero,
@@ -692,6 +693,19 @@ section.folder {
     padding: 20px 18px;
   }
 
+  .intro-panel {
+    gap: 8px;
+  }
+
+  .intro-copy {
+    max-width: none;
+  }
+
+  .search-bar input {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
   .card-row {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -704,5 +718,134 @@ section.folder {
   .card-actions a,
   .card-actions button {
     padding: 12px 14px;
+  }
+
+  .modal {
+    padding: 12px;
+  }
+
+  .modal-card {
+    padding: 24px 18px 22px;
+  }
+
+  .step-card {
+    padding: 16px;
+  }
+
+  .gif-placeholder {
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px 12px 36px;
+  }
+
+  .hero {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .hero-copy {
+    gap: 14px;
+  }
+
+  .brand-row {
+    gap: 8px;
+  }
+
+  .brand-badge,
+  .brand-pill {
+    padding: 7px 10px;
+    font-size: 0.72rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 8.6vw, 2.45rem);
+  }
+
+  .subtitle {
+    font-size: 0.96rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 16px;
+  }
+
+  .hero-highlights {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 12px 13px;
+  }
+
+  .hero-panel-card {
+    padding: 16px;
+  }
+
+  .intro-panel h2 {
+    font-size: 1.15rem;
+  }
+
+  .intro-copy {
+    font-size: 0.95rem;
+  }
+
+  .search-bar input {
+    min-height: 50px;
+    padding: 14px 15px;
+    border-radius: 16px;
+  }
+
+  .folder-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card {
+    padding: 16px 14px;
+  }
+
+  .card-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tag {
+    align-self: flex-start;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    min-width: 0;
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .site-footer {
+    padding: 12px 2px 0;
+    font-size: 0.9rem;
+  }
+
+  .toast {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 }
