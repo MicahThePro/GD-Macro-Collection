@@ -516,22 +516,23 @@ function renderCollection(filter = '') {
       </div>
     `;
 
-    // CREATE SORT BAR FIRST
-    const sortBar = document.createElement('div');
-    sortBar.className = 'sort-bar';
-    sortBar.innerHTML = `
-      <button data-sort="name">Name</button>
-      <button data-sort="id">ID</button>
-    `;
-    section.appendChild(sortBar);
+    const showSortBar = state.group !== 'main-levels';
+    if (showSortBar) {
+      const sortBar = document.createElement('div');
+      sortBar.className = 'sort-bar';
+      sortBar.innerHTML = `
+        <button data-sort="name">Name</button>
+        <button data-sort="id">ID</button>
+      `;
+      section.appendChild(sortBar);
 
-    // NOW YOU CAN SAFELY ADD EVENT LISTENERS
-    sortBar.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sortMode = btn.dataset.sort;
-        renderCollection(filterInput.value);
+      sortBar.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          sortMode = btn.dataset.sort;
+          renderCollection(filterInput.value);
+        });
       });
-    });
+    }
 
     // NOW FILTER + SORT + RENDER MACROS
     const filteredMacros = macros
