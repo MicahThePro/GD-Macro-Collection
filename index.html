@@ -3,41 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GD Macro Collection</title>
+  <meta name="description" content="A refined Geometry Dash macro library for browsing, downloading, and sharing replay macros with a polished interface." />
+  <title>Geometry Dash Macro Library</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Macro Browser</p>
-        <h1>One place for every Geometry Dash macro</h1>
-        <p class="subtitle">Browse the full collection by Main or Custom levels, then download or copy any macro with a single tap.</p>
+        <div class="brand-row">
+          <span class="brand-badge">Geometry Dash</span>
+          <span class="brand-pill">Professional macro library</span>
+        </div>
+        <p class="eyebrow">Curated replay collection</p>
+        <h1>Discover, download, and share every Geometry Dash macro in one polished place.</h1>
+        <p class="subtitle">Browse main levels and custom levels with a cleaner experience designed for quick discovery, smoother navigation, and easier sharing.</p>
         <p id="macroCount" class="macro-count">Loading macro count...</p>
-        <p class="disclaimer">This collection is provided for showcase and educational purposes only, not to encourage cheating.</p>
         <div class="actions">
           <button id="downloadAll" class="button primary">Download All as ZIP</button>
           <button id="showSettingsInfo" class="button secondary">How to set 240 FPS & TPS</button>
           <button id="showRunInfo" class="button secondary">How to run these macros</button>
         </div>
-        <p class="settings-note">These macros were recorded at 240 FPS and 240 TPS, so your game settings must be set to those values to use them correctly. Click the button above to see how to set them up.</p>
+
+        <div class="hero-highlights">
+          <div class="stat-card">
+            <strong>Organized folders</strong>
+            <span>Browse by collection, difficulty, and level style.</span>
+          </div>
+          <div class="stat-card">
+            <strong>Instant access</strong>
+            <span>Copy links or download files in a single tap.</span>
+          </div>
+          <div class="stat-card">
+            <strong>Built for replay use</strong>
+            <span>Made to feel refined, reliable, and easy to explore.</span>
+          </div>
+        </div>
       </div>
+
       <div class="hero-panel">
         <div class="hero-panel-card">
           <div class="panel-section">
             <p class="hero-card-label">How it works</p>
             <ul>
               <li>Start with Main or Custom Levels</li>
-              <li>Choose a difficulty folder</li>
-              <li>Download or copy the macro link</li>
+              <li>Open a difficulty or style category</li>
+              <li>Download or copy the macro link instantly</li>
             </ul>
+          </div>
+          <div class="panel-section">
+            <p class="hero-card-label">Why it feels better</p>
+            <p class="panel-copy">This experience is designed to feel more structured, faster to navigate, and more approachable for new visitors.</p>
           </div>
         </div>
       </div>
+
       <div class="breadcrumb" id="breadcrumb"></div>
     </header>
 
-    <main>
+    <main class="content-stack">
+      <section class="intro-panel">
+        <div>
+          <p class="eyebrow">Browse the library</p>
+          <h2>Find the right replay without the clutter.</h2>
+        </div>
+        <p class="intro-copy">Search by level name, ID, or category and jump straight into the folder you need.</p>
+      </section>
+
       <div class="search-bar">
         <input id="filterInput" type="search" placeholder="Search levels, difficulty, or macro name" />
       </div>
@@ -45,6 +77,10 @@
       <section id="collection"></section>
     </main>
   </div>
+
+  <footer class="site-footer">
+    <p>This collection is provided for showcase and educational purposes only, not to encourage cheating.</p>
+  </footer>
 
   <div id="settingsInfoModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-modal="true"></div>

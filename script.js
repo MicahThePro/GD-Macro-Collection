@@ -79,7 +79,12 @@ function updateMacroCount() {
 }
 
 function setLoading(message) {
-  collectionElement.innerHTML = `<p class="card-subtitle">${message}</p>`;
+  collectionElement.innerHTML = `
+    <div class="loading-card">
+      <div class="loading-ring"></div>
+      <p class="card-subtitle">${message}</p>
+    </div>
+  `;
 }
 
 async function copyTextToClipboard(text) {
@@ -592,11 +597,11 @@ function loadGifIntoPlaceholder(placeholder, src, alt) {
 function loadGifPlaceholders() {
   try {
     if (fpsGifPlaceholder) {
-      loadGifIntoPlaceholder(fpsGifPlaceholder, 'howtosetfpsto240.gif', 'How to set FPS to 240');
+      loadGifIntoPlaceholder(fpsGifPlaceholder, 'assets/howtosetfpsto240.gif', 'How to set FPS to 240');
     }
 
     if (tpsGifPlaceholder) {
-      loadGifIntoPlaceholder(tpsGifPlaceholder, 'howtosettpsto240.gif', 'How to set TPS to 240');
+      loadGifIntoPlaceholder(tpsGifPlaceholder, 'assets/howtosettpsto240.gif', 'How to set TPS to 240');
     }
   } catch (error) {
     console.warn('Unable to load the GIF previews:', error);
